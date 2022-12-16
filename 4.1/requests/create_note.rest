@@ -3,8 +3,8 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Keijo Taalasmaa",
-    "number": "0344292021"
+    "name": "Keimo Taalasmaa",
+    "number": "034-4292021"
 }
 //{
 //    "content": "VS Code Rest client is pretty good",

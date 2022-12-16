@@ -1,54 +1,36 @@
 const personsRouter = require('express').Router()
 const Contact = require('../models/person')
 
-//Info
-/*
-personsRouter.get('/', (request, response) => {
-    response.send('<h1>Hello world</h1>')
-    response.end(JSON.stringify(infos))
-  })
-  personsRouter.get('/api/infos/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const info = infos.find(info => info.id === id)
-    if(info) {
-      response.json(info)
-    } else {
-      response.status(404).end()
-    }
-  }) 
+let persons = [
+    {
+      id: 1,
+      name: "Keijo Kuusinen",
+      number: "0501231231",
+    },
+    {
+      id: 2,
+      name: "Martti Koisola",
+      number: "0501231232",
+    },
+    {
+      id: 3,
+      name: "Seppo Taalasmaa",
+      number: "0501231233",
+    },
+    {
+      id: 4,
+      name: "Jarmo",
+      number: "035023035",
+    },
+  ]
   
-  personsRouter.get('/api/infos', (request, response) => {
-    const hello = Contact.find({}).then(persons => {
-      let infos = [
-        {
-          text: `Phonebook has info for ${persons.length} people`, 
-          date: Date(),
-        },
-      ]
-      
-      response.json(infos)
-    })
-    
-    console.log(hello)
-    
-  })
-  */
-
-  //Persons
-
-  /*
-  personsRouter.get('/', (request, response) => {
-    response.send('<h1>Hello world</h1>')
-    response.end(JSON.stringify(persons))
-  })
-*/
 personsRouter.get('/', (request, response) => {
     Contact.find({}).then(persons => {
-        response.json(persons)
-    })
+    response.json(persons)
+  })
   })
 
-  personsRouter.get('/:id', (request, response, next) => {
+  personsRouter.get('/:id', (request, response, next) => { // morgan('tiny'),
     Contact.findById(request.params.id)
     .then(person => {
      if(person) {
@@ -60,35 +42,16 @@ personsRouter.get('/', (request, response) => {
      }
     })
     .catch(error => next(error))
-  }) 
-  
-  personsRouter.get('/api/persons', (request, response) => {
-    Contact.find({}).then(persons => {
-    response.json(persons)
-  })
-  })
-  
-  personsRouter.delete('/:id', (request, response, next) => {
-    Contact.findByIdAndRemove(request.params.id)
-    .then(result => {
-        response.status(204).end()
-    })
-    .catch(error => next(error))
-  
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-    //Jos poisto onnistuu vastataan statuskoodilla 204.
-    response.status(204).end()
-  })
-  
-  const generateID = () => {
+})
+
+const generateID = () => {
     const randomID = persons.length > 0
     ? Math.random(...persons.map(p => p.id))
     : 0
     let randomiidee = randomID * 100
     return Math.round(randomiidee)
   }
-  personsRouter.post('/', (request, response, next) => {
+  personsRouter.post('/', (request, response, next) => { //'api/persons'
     const body = request.body
   
     if (body.name === undefined) {
@@ -129,7 +92,20 @@ personsRouter.get('/', (request, response) => {
     })
     .catch(error => next(error))
   })
+
+  personsRouter.delete('/:id', (request, response, next) => {
+    Contact.findByIdAndRemove(request.params.id)
+    .then(result => {
+        response.status(204).end()
+    })
+    .catch(error => next(error))
   
+    const id = Number(request.params.id)
+    persons = persons.filter(person => person.id !== id)
+    //Jos poisto onnistuu vastataan statuskoodilla 204.
+    response.status(204).end()
+  })
+
   personsRouter.put('/:id', (request, response, next) => {
     const {name, number, important} = request.body
     Contact.findByIdAndUpdate(request.params.id, {name, number, important}, {new: true, runValidators: true, context: "query "})
@@ -139,4 +115,4 @@ personsRouter.get('/', (request, response) => {
     .catch(error => next(error))
   })
 
-  module.exports = personsRouter
+module.exports = personsRouter
