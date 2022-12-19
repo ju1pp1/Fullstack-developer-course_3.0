@@ -3,9 +3,17 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Keimo Taalasmaa",
-    "number": "034-4292021"
+    "title": "Hauska kirja",
+    "author": "lol",
+    "url": "http://",
+    "likes": 3
 }
+
+//{
+//    "name": "Keimo Taalasmaa",
+//    "number": "034-4292021"
+//}
+
 //{
 //    "content": "VS Code Rest client is pretty good",
 //    "important": false

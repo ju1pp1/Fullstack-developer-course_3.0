@@ -6,8 +6,20 @@ const personsRouter = require('./controllers/persons')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
+//var MongoClient = require('mongodb').MongoClient
 
 logger.info('connecting to', config.MONGODB_URI)
+
+/*
+const mongoUrl = 'mongodb://localhost/persons'
+MongoClient.connect("mongodb://localhost:3001/persons")
+.then(() => {
+  logger.info('connected to MongoDB')
+})
+.catch((error) => {
+  logger.error('error connection to MongoDB:', error.message)
+})
+*/
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {

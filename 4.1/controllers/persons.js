@@ -53,7 +53,39 @@ const generateID = () => {
   }
   personsRouter.post('/', (request, response, next) => { //'api/persons'
     const body = request.body
-  
+
+    if (body.title === undefined) {
+      return response.status(400).json({
+        error: 'name missing'
+      })
+    }
+    if(!body.title) {
+      return response.status(400).json({
+        error: 'name missing'
+      })
+    }
+    if(body.author === undefined) {
+      return response.status(400).json({
+        error: 'number missing'
+      })
+    }
+    if(!body.author) {
+      return response.status(400).json({
+        error: 'number is missing'
+      })
+    }
+    if( persons.findIndex((p) => p.title == body.title) != -1) {
+      return response.status(400).json({
+        error: 'name already exists'
+      })
+    }
+    const person = new Contact({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    })
+  /*
     if (body.name === undefined) {
       return response.status(400).json({
         error: 'name missing'
@@ -85,10 +117,11 @@ const generateID = () => {
       important: body.important || false,
       id: generateID(),
     })
+    */
     persons = persons.concat(person)
   
     person.save().then(savedPerson => {
-      response.json(savedPerson)
+      response.status(201).json(savedPerson)
     })
     .catch(error => next(error))
   })
