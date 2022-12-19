@@ -1,5 +1,5 @@
-const personsRouter = require('express').Router()
-const Contact = require('../models/person')
+const blogRouter = require('express').Router()
+const Blog = require('../models/person')
 
 let persons = [
     {
@@ -24,14 +24,14 @@ let persons = [
     },
   ]
   
-personsRouter.get('/', (request, response) => {
-    Contact.find({}).then(persons => {
+  blogRouter.get('/', (request, response) => {
+    Blog.find({}).then(persons => {
     response.json(persons)
   })
   })
 
-  personsRouter.get('/:id', (request, response, next) => { // morgan('tiny'),
-    Contact.findById(request.params.id)
+  blogRouter.get('/:id', (request, response, next) => { // morgan('tiny'),
+    Blog.findById(request.params.id)
     .then(person => {
      if(person) {
       console.log(person.id)
@@ -51,35 +51,35 @@ const generateID = () => {
     let randomiidee = randomID * 100
     return Math.round(randomiidee)
   }
-  personsRouter.post('/', (request, response, next) => { //'api/persons'
+  blogRouter.post('/', (request, response, next) => { //'api/persons'
     const body = request.body
 
     if (body.title === undefined) {
       return response.status(400).json({
-        error: 'name missing'
+        error: 'title missing'
       })
     }
     if(!body.title) {
       return response.status(400).json({
-        error: 'name missing'
+        error: 'title missing'
       })
     }
     if(body.author === undefined) {
       return response.status(400).json({
-        error: 'number missing'
+        error: 'author missing'
       })
     }
     if(!body.author) {
       return response.status(400).json({
-        error: 'number is missing'
+        error: 'author is missing'
       })
     }
     if( persons.findIndex((p) => p.title == body.title) != -1) {
       return response.status(400).json({
-        error: 'name already exists'
+        error: 'title already exists'
       })
     }
-    const person = new Contact({
+    const person = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
@@ -126,8 +126,8 @@ const generateID = () => {
     .catch(error => next(error))
   })
 
-  personsRouter.delete('/:id', (request, response, next) => {
-    Contact.findByIdAndRemove(request.params.id)
+  blogRouter.delete('/:id', (request, response, next) => {
+    Blog.findByIdAndRemove(request.params.id)
     .then(result => {
         response.status(204).end()
     })
@@ -139,13 +139,13 @@ const generateID = () => {
     response.status(204).end()
   })
 
-  personsRouter.put('/:id', (request, response, next) => {
+  blogRouter.put('/:id', (request, response, next) => {
     const {name, number, important} = request.body
-    Contact.findByIdAndUpdate(request.params.id, {name, number, important}, {new: true, runValidators: true, context: "query "})
+    Blog.findByIdAndUpdate(request.params.id, {name, number, important}, {new: true, runValidators: true, context: "query "})
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
     .catch(error => next(error))
   })
 
-module.exports = personsRouter
+module.exports = blogRouter
