@@ -1,13 +1,18 @@
-
 const dummy = (blogs) => {   
-    const blogList = [
-        { name: "FirstBlog"},
-        { name: "SecondBlog"}
-    ]
-    blogList.map(names => names.name)
-    return blogList.slice(0, 1).length
-}
+    blogs = [2]
 
+    blogs.map(names => names.name)
+    return blogs.slice(0, 1).length
+}
+const totalLikes = (likesSum) => {
+
+    const sum = likesSum.reduce((sum, item) => sum + item.likes, 0)
+    console.log(sum)
+    
+    return sum
+    
+}
 module.exports = {
-    dummy
+    dummy,
+    totalLikes
 }
