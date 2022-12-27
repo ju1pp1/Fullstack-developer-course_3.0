@@ -10,7 +10,6 @@ const totalLikes = (likesSum) => {
     console.log(sum)
     
     return sum
-    
 }
 module.exports = {
     dummy,
