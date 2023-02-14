@@ -23,13 +23,46 @@ let persons = [
       number: "035023035",
     },
   ]
-  
+  /*
   blogRouter.get('/', (request, response) => {
     Blog.find({}).then(persons => {
     response.json(persons)
   })
   })
+  */
 
+  blogRouter.get('/', async (request, response) => {
+    const blogs = await Blog.find({})   
+    response.json(blogs)
+  })
+  
+  blogRouter.get('/:id', async (request, response) => { // morgan('tiny'),
+    const blog = await Blog.findById(request.params.id)
+     if(blog) {
+      //console.log(person.id)
+      response.json(blog)
+     }
+     else {
+      response.status(201).json(savedBlog)
+     }
+})
+  /*
+  blogRouter.get('/:id', async (request, response, next) => { // morgan('tiny'),
+    try {
+    const blog = await Blog.findById(request.params.id)
+     if(person) {
+      //console.log(person.id)
+      response.json(person)
+     }
+     else {
+      response.status(404).end()
+     }
+    } catch(exception) {
+      next(exception)
+  }
+})
+*/
+  /*
   blogRouter.get('/:id', (request, response, next) => { // morgan('tiny'),
     Blog.findById(request.params.id)
     .then(person => {
@@ -43,6 +76,7 @@ let persons = [
     })
     .catch(error => next(error))
 })
+*/
 
 const generateID = () => {
     const randomID = persons.length > 0
@@ -51,7 +85,7 @@ const generateID = () => {
     let randomiidee = randomID * 100
     return Math.round(randomiidee)
   }
-  blogRouter.post('/', (request, response, next) => { //'api/persons'
+  blogRouter.post('/', async (request, response) => { //'api/persons'
     const body = request.body
 
     if (body.title === undefined) {
@@ -119,13 +153,23 @@ const generateID = () => {
     })
     */
     persons = persons.concat(person)
+    //const savedBlog = await person.save()
+    //  response.json(savedBlog)
+    //})
+    
+    
+    const savedBlog = await person.save()
+    response.status(201).json(savedBlog)
+  })
   
+    /*
     person.save().then(savedPerson => {
       response.status(201).json(savedPerson)
     })
     .catch(error => next(error))
   })
-
+*/
+/*
   blogRouter.delete('/:id', (request, response, next) => {
     Blog.findByIdAndRemove(request.params.id)
     .then(result => {
@@ -138,6 +182,17 @@ const generateID = () => {
     //Jos poisto onnistuu vastataan statuskoodilla 204.
     response.status(204).end()
   })
+*/
+blogRouter.delete('/:id', async (request, response) => {
+    await Blog.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+  
+    //const id = Number(request.params.id)
+    //persons = persons.filter(person => person.id !== id)
+    //Jos poisto onnistuu vastataan statuskoodilla 204.
+    //response.status(204).end()
+  })
+  
 
   blogRouter.put('/:id', (request, response, next) => {
     const {name, number, important} = request.body
