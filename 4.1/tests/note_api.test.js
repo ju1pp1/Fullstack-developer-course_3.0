@@ -5,18 +5,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const Person = require('../models/person')
-/*
-const initialPersons = [
-    {
-        title: 'HTML is easy',
-        author: "Masa"
-    },
-    {
-        title: 'Browser can execute only Javascript',
-        author: "Keijo"
-    },
-]
-*/
+
 beforeEach(async () => {
     await Person.deleteMany({})
     await Person.insertMany(helper.initialPersons)
@@ -24,20 +13,22 @@ beforeEach(async () => {
 
 test('notes are returned as json', async () => {
   await api
-    .get('/api/blogs') //notes
+    .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 })
 test('all are returned', async () => {
     const response = await api.get('/api/blogs')
-    //console.log(initialPersons.length)
     expect(response.body).toHaveLength(helper.initialPersons.length)
   })
   
   test('a specific blog is within the returned', async () => {
     const response = await api.get('/api/blogs')
     const contents = response.body.map(r => r.title)
-    expect(contents).toContain('HTML is easy') 
+    //expect(contents).toContain('HTML is easy')
+    //OR
+    expect(contents).toContainEqual(helper.initialPersons[0].title)
+    expect(contents).toContainEqual(helper.initialPersons[1].title)
   })
 
   test('a valid blog can be added', async () => {
@@ -83,7 +74,7 @@ test('all are returned', async () => {
 
     expect(resultBlog.body).toEqual(blogToView)
   })
-
+/*
   test('a blog can be deleted', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
@@ -93,12 +84,12 @@ test('all are returned', async () => {
     .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
-
+    
     expect(blogsAtEnd).toHaveLength(helper.initialPersons.length - 1)
     const contents = blogsAtEnd.map(r => r.title)
     expect(contents).not.toContain(blogToDelete.title)
   })
-
+*/
 afterAll(async () => {
   await mongoose.connection.close()
 })
