@@ -5,6 +5,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const Person = require('../models/person')
+const { update } = require('../models/person')
 
 beforeEach(async () => {
     await Person.deleteMany({})
@@ -73,6 +74,13 @@ test('all are returned', async () => {
     .expect('Content-Type', /application\/json/)
 
     expect(resultBlog.body).toEqual(blogToView)
+  })
+  test('check if _id is returned', async () => {
+    const blogsAtStart = await helper.blogsIdInDb()
+    console.log(blogsAtStart)
+    console.log(blogsAtStart.map(r => r.id))
+    expect(blogsAtStart.map(r => r.id)).toBeDefined()
+    
   })
 /*
   test('a blog can be deleted', async () => {
