@@ -82,6 +82,39 @@ test('all are returned', async () => {
     expect(blogsAtStart.map(r => r.id)).toBeDefined()
     
   })
+  test('a blog can be added using async/await', async () => {
+    const newBlog = {
+      title: "new blog",
+      author: "J.A",
+      url: "none",
+      likes: 15,
+    }
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    console.log(await (await helper.blogsInDb()).length)
+    expect(await (await helper.blogsInDb()).length + 1)
+  })
+ 
+  /*
+  test('delete last blog in array', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[2]
+
+    await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.blogsInDb.length - 1)
+    const contents = blogsAtEnd.map(r => r.title)
+    expect(contents).not.toContain(blogToDelete.title)
+  })
+  */
+
 /*
   test('a blog can be deleted', async () => {
     const blogsAtStart = await helper.blogsInDb()
