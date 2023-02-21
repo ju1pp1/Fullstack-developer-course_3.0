@@ -6,6 +6,7 @@ const api = supertest(app)
 
 const Person = require('../models/person')
 const { update } = require('../models/person')
+const { response } = require('../app')
 
 beforeEach(async () => {
     await Person.deleteMany({})
@@ -53,7 +54,7 @@ test('all are returned', async () => {
     expect(contents).toContain('async/await simplifies making async calls')
   })
 
-  test('blog without content is not added', async () => {
+  test('blog without title is not added', async () => {
     const newBlog = {
       title: ""
     }
@@ -65,6 +66,7 @@ test('all are returned', async () => {
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialPersons.length)
   })
+  
   test('a specific blog can be viewed', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToView = blogsAtStart[0]
@@ -98,6 +100,7 @@ test('all are returned', async () => {
     console.log(await (await helper.blogsInDb()).length)
     expect(await (await helper.blogsInDb()).length + 1)
   })
+  
   test('if likes has no value, set it 0', async () => {
 
       const newBlog = {
@@ -120,7 +123,65 @@ test('all are returned', async () => {
     console.log(await (await helper.blogsInDb()).length)
     expect(newBlog.likes).toEqual(0)
   })
- 
+  
+  test('blog without title in db is not added', async () => {
+    const newBlog = {
+      title: ""
+    }
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtEnd.length)
+  })
+  test('blog without url in db is not added', async () => {
+    const newBlog = {
+      url: ""
+    }
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtEnd.length)
+  })
+ test('if title is empty, response with status code 400 Bad Request', async () => {
+  const newBlog = {
+    title: "",
+    author: "J.J",
+    url: "",
+    likes: 1,
+  }
+if(await api.post('/api/blogs').send(newBlog.title == "" === false)) {
+  
+  await api
+  .post('/api/blogs')
+  .send(newBlog)
+  .expect(400)
+  .expect('Content-Type', /application\/json/)
+
+}
+})
+test('if url is empty, response with status code 400 Bad Request', async () => {
+  const newBlog = {
+    title: "",
+    author: "J.J",
+    url: "",
+    likes: 1,
+  }
+if(await api.post('/api/blogs').send(newBlog.url == "" === false)) {
+  
+  await api
+  .post('/api/blogs')
+  .send(newBlog)
+  .expect(400)
+  .expect('Content-Type', /application\/json/)
+
+}
+})
   /*
   test('delete last blog in array', async () => {
     const blogsAtStart = await helper.blogsInDb()
