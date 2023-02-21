@@ -98,6 +98,28 @@ test('all are returned', async () => {
     console.log(await (await helper.blogsInDb()).length)
     expect(await (await helper.blogsInDb()).length + 1)
   })
+  test('if likes has no value, set it 0', async () => {
+
+      const newBlog = {
+        title: "test blog",
+        author: "A.J",
+        url: "none",
+        likes: "",
+      }
+      
+    if(api.post('/api/blogs').send(newBlog.likes = null))
+    {
+      await api.post('/api/blogs').send(newBlog.likes = 0)
+    }
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    console.log(await (await helper.blogsInDb()).length)
+    expect(newBlog.likes).toEqual(0)
+  })
  
   /*
   test('delete last blog in array', async () => {
