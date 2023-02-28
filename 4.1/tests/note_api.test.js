@@ -5,8 +5,11 @@ const app = require('../app')
 const api = supertest(app)
 
 const Person = require('../models/person')
-const { update } = require('../models/person')
-const { response } = require('../app')
+const { update, findByIdAndUpdate, updateOne } = require('../models/person')
+const { response, request, set } = require('../app')
+
+describe('when there is initially some notes saved', () => {
+
 
 beforeEach(async () => {
     await Person.deleteMany({})
@@ -32,6 +35,10 @@ test('all are returned', async () => {
     expect(contents).toContainEqual(helper.initialPersons[0].title)
     expect(contents).toContainEqual(helper.initialPersons[1].title)
   })
+
+describe('viewing a specific note', () => {
+
+
 
   test('a valid blog can be added', async () => {
     const newBlog = {
@@ -84,6 +91,11 @@ test('all are returned', async () => {
     expect(blogsAtStart.map(r => r.id)).toBeDefined()
     
   })
+
+describe('addition of a new note', () => {
+
+
+
   test('a blog can be added using async/await', async () => {
     const newBlog = {
       title: "new blog",
@@ -182,7 +194,30 @@ if(await api.post('/api/blogs').send(newBlog.url == "" === false)) {
 
 }
 })
-  /*
+describe('modifying a blog', () => {
+  
+  test('modifying a blog using async/await', async () => {
+    
+    const blogsInDb = await helper.blogsInDb()
+    const first = blogsInDb[0]
+
+    const update = await helper.updateBlog()
+    
+    console.log(update)
+
+     await api.put(`/api/blogs/${first.id}`)
+    .set('Content-Type', 'application/json')
+    .send(update)
+      expect(update.likes).toEqual(30)
+    
+
+  })
+
+
+describe('deletion of a note', () => {
+
+
+  
   test('delete last blog in array', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[2]
@@ -196,7 +231,7 @@ if(await api.post('/api/blogs').send(newBlog.url == "" === false)) {
     const contents = blogsAtEnd.map(r => r.title)
     expect(contents).not.toContain(blogToDelete.title)
   })
-  */
+  
 
 /*
   test('a blog can be deleted', async () => {
@@ -214,6 +249,12 @@ if(await api.post('/api/blogs').send(newBlog.url == "" === false)) {
     expect(contents).not.toContain(blogToDelete.title)
   })
 */
+})
+})
+})
+})
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
